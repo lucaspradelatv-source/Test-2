@@ -1,0 +1,1275 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happyside OS</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    image-rendering: pixelated;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: "Courier New", monospace;
+    font-weight: bold;
+    background: #111;
+    color: #111;
+}
+
+button, input {
+    font-family: inherit;
+    font-weight: bold;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* ÁREA DE TRABALHO */
+
+#desktop {
+    height: calc(100vh - 43px);
+    width: 100vw;
+    padding: 15px;
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(#0004, #0002),
+        url("https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1920&q=85")
+        center center / cover no-repeat;
+}
+
+/* ÍCONES BRANCOS */
+
+.icons {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    grid-auto-rows: 105px;
+    gap: 5px 12px;
+    width: max-content;
+    max-width: 100%;
+}
+
+.appicon {
+    width: 96px;
+    height: 100px;
+    padding: 6px 3px;
+    text-align: center;
+    color: white;
+    text-shadow: 2px 2px 3px black;
+    font-size: 11px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    overflow-wrap: anywhere;
+}
+
+.appicon:hover {
+    background: #ffffff35;
+    border: 2px dotted white;
+}
+
+.appicon .symbol {
+    display: block;
+    font-family: monospace;
+    font-size: 39px;
+    line-height: 48px;
+    color: white;
+    text-shadow: 2px 2px 4px #000;
+    margin-bottom: 5px;
+}
+
+.appicon .name {
+    display: block;
+    line-height: 14px;
+}
+
+/* BARRA DE TAREFAS */
+
+#taskbar {
+    height: 43px;
+    width: 100%;
+    position: relative;
+    z-index: 1000;
+    background: #c0c0c0;
+    border-top: 3px solid white;
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    gap: 6px;
+}
+
+#start {
+    padding: 8px 12px;
+    border: 3px outset white;
+    background: #c0c0c0;
+}
+
+#taskButtons {
+    display: flex;
+    gap: 4px;
+}
+
+.task-button {
+    max-width: 145px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    height: 30px;
+    border: 2px outset white;
+    background: #c0c0c0;
+    padding: 4px 8px;
+    font-size: 11px;
+}
+
+#clock {
+    margin-left: auto;
+    border: 2px inset white;
+    padding: 7px;
+    font-size: 12px;
+}
+
+/* MENU INICIAR */
+
+#startmenu {
+    display: none;
+    position: absolute;
+    z-index: 1200;
+    bottom: 43px;
+    left: 4px;
+    width: 230px;
+    padding: 8px;
+    background: #c0c0c0;
+    border: 3px outset white;
+    box-shadow: 5px 5px #0008;
+}
+
+#startmenu h3 {
+    background: #174b91;
+    color: white;
+    padding: 12px;
+    margin: 0 0 8px;
+}
+
+#startmenu button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 9px;
+    border: none;
+    background: transparent;
+}
+
+#startmenu button:hover {
+    background: #174b91;
+    color: white;
+}
+
+/* JANELAS */
+
+.window {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    top: 7%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(490px, 94vw);
+    max-height: 82%;
+    background: #c0c0c0;
+    border: 4px outset white;
+    box-shadow: 7px 7px #0009;
+}
+
+.title {
+    height: 31px;
+    background: linear-gradient(90deg, #102f69, #3985d6);
+    color: white;
+    padding: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    cursor: move;
+    touch-action: none;
+}
+
+.close {
+    background: #c0c0c0;
+    border: 2px outset white;
+    width: 23px;
+    height: 22px;
+    padding: 0;
+}
+
+.content {
+    padding: 15px;
+    max-height: calc(82vh - 40px);
+    overflow-y: auto;
+    font-size: 13px;
+}
+
+.btn {
+    padding: 9px 12px;
+    margin: 4px;
+    border: 3px outset white;
+    background: #c0c0c0;
+}
+
+.btn:hover {
+    background: #dedede;
+}
+
+input {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 9px 0;
+    border: 3px inset white;
+    background: white;
+}
+
+.status {
+    background: #aaa;
+    border: 2px inset white;
+    padding: 10px;
+    margin-top: 10px;
+    min-height: 35px;
+}
+
+.document {
+    background: #eee8d5;
+    border: 3px inset white;
+    padding: 14px;
+    white-space: pre-wrap;
+    line-height: 1.7;
+    font-size: 12px;
+    user-select: text;
+}
+
+.timer {
+    background: #222;
+    color: #ff5555;
+    text-align: center;
+    padding: 8px;
+    margin-bottom: 10px;
+}
+
+.separator {
+    border: none;
+    border-top: 2px solid #888;
+    margin: 12px 0;
+}
+
+.small {
+    font-size: 11px;
+    color: #444;
+}
+
+/* EFEITOS */
+
+.glitch {
+    animation: glitch .12s infinite;
+}
+
+@keyframes glitch {
+    0% { transform: translate(0); filter: none; }
+    25% { transform: translate(3px,-2px); filter: hue-rotate(90deg); }
+    50% { transform: translate(-3px,2px); filter: invert(.2); }
+    75% { transform: translate(2px,1px); filter: hue-rotate(180deg); }
+    100% { transform: translate(0); filter: none; }
+}
+
+.corrupt {
+    color: #a00000;
+    animation: blink .5s steps(2) infinite;
+}
+
+@keyframes blink {
+    50% { opacity: .2; }
+}
+
+#notification {
+    display: none;
+    position: absolute;
+    z-index: 2000;
+    right: 12px;
+    bottom: 12px;
+    max-width: 260px;
+    background: #c0c0c0;
+    border: 3px outset white;
+    padding: 12px;
+    font-size: 12px;
+}
+
+/* JOGO */
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+    margin: 15px 0;
+}
+
+.game-card {
+    height: 65px;
+    font-size: 22px;
+    border: 3px outset white;
+    background: #174b91;
+    color: white;
+}
+
+.game-card.flipped {
+    background: #eee8d5;
+    color: #111;
+}
+
+@media(max-width: 520px) {
+    .icons {
+        grid-template-columns: repeat(3, 85px);
+        grid-auto-rows: 95px;
+        gap: 3px;
+    }
+
+    .appicon {
+        width: 82px;
+        height: 92px;
+    }
+
+    .appicon .symbol {
+        font-size: 33px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="desktop">
+
+    <!-- ÍCONES DA ÁREA DE TRABALHO -->
+
+    <div class="icons">
+
+        <div class="appicon" onclick="openApp('arquivo')">
+            <span class="symbol">▤</span>
+            <span class="name">Arquivo Happyside</span>
+        </div>
+
+        <div class="appicon" onclick="openApp('firefox')">
+            <span class="symbol">◉</span>
+            <span class="name">Firefox</span>
+        </div>
+
+        <div class="appicon" onclick="openApp('luzes')">
+            <span class="symbol">▧</span>
+            <span class="name">Controle de Luzes</span>
+        </div>
+
+        <div class="appicon" onclick="openApp('pasta')">
+            <span class="symbol">▰</span>
+            <span class="name">*AWES@M12</span>
+        </div>
+
+        <div class="appicon" onclick="openApp('recuperador')">
+            <span class="symbol">▣</span>
+            <span class="name">Recuperador de Arquivos</span>
+        </div>
+
+        <div class="appicon" onclick="openApp('funcionarios')">
+            <span class="symbol">▧</span>
+            <span class="name">Funcionários.txt</span>
+        </div>
+
+        <div class="appicon" onclick="openApp('manual')">
+            <span class="symbol">▤</span>
+            <span class="name">Manual Técnico</span>
+        </div>
+
+        <div class="appicon" onclick="openApp('manutencao')">
+            <span class="symbol">▧</span>
+            <span class="name">Relatório de Manutenção</span>
+        </div>
+
+        <div class="appicon" onclick="openApp('materiais')">
+            <span class="symbol">▤</span>
+            <span class="name">Lista de Materiais</span>
+        </div>
+
+        <div class="appicon" onclick="openApp('anotacoes')">
+            <span class="symbol">▧</span>
+            <span class="name">Anotações.txt</span>
+        </div>
+
+        <div class="appicon" onclick="openApp('cabanas')">
+            <span class="symbol">▰</span>
+            <span class="name">Arquivos das Cabanas</span>
+        </div>
+
+        <div class="appicon" onclick="openApp('jogo')">
+            <span class="symbol">▦</span>
+            <span class="name">Jogo da Memória</span>
+        </div>
+
+    </div>
+
+    <div id="notification"></div>
+
+    <!-- ARQUIVO HAPPYSIDE -->
+
+    <div class="window" id="arquivo">
+        <div class="title">
+            Arquivo Happyside.txt
+            <button class="close" onclick="closeApp('arquivo')">X</button>
+        </div>
+        <div class="content">
+            <div class="timer" id="timer">ARQUIVO TEMPORÁRIO</div>
+            <h3>Arquivo Happyside.txt</h3>
+            <div class="document">
+REGISTRO HISTÓRICO
+ARQUIVO: HAPPYSIDE
+STATUS: PARCIALMENTE RECUPERADO
+
+Happyside é um lugar antigo.
+Muito mais antigo do que os registros
+oficiais conseguem explicar.
+
+Os primeiros exploradores chegaram
+à região por volta de 1600.
+
+Na época, o lugar era conhecido como
+Hepside.
+
+Era uma reserva florestal.
+Um território que deveria permanecer
+intocado.
+
+Mas os exploradores não respeitaram
+isso.
+
+A região começou a receber visitantes.
+Construções foram erguidas.
+O silêncio da floresta desapareceu.
+
+Em algum momento, algo mudou.
+
+Os registros de 1622 e 1623 apresentam
+informações contraditórias sobre um
+acontecimento ocorrido na região.
+
+Depois desse episódio, o nome Hepside
+desapareceu dos documentos.
+
+O novo nome passou a ser:
+
+BLOODY MIST
+
+Existem relatos de pessoas que agiam
+de maneira completamente diferente
+depois de visitar o lugar.
+
+Algumas pareciam confusas.
+Outras apresentavam comportamentos
+inexplicáveis.
+
+Os documentos seguintes foram
+parcialmente destruídos.
+
+Há uma anotação repetida em vários
+registros:
+
+"Não deixem o lugar acordar."
+
+Não foi possível descobrir quem
+escreveu essa frase.
+
+FIM DO TRECHO DISPONÍVEL.
+[ERRO: DADOS INCOMPLETOS]
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREFOX -->
+
+    <div class="window" id="firefox">
+        <div class="title">
+            Firefox - Navegador
+            <button class="close" onclick="closeApp('firefox')">X</button>
+        </div>
+        <div class="content">
+            <h2>Firefox</h2>
+            <p class="small">Navegador de internet</p>
+            <hr class="separator">
+            <input id="search" placeholder="Pesquisar na internet...">
+            <button class="btn" onclick="searchWeb()">Pesquisar</button>
+            <div class="status" id="webstatus">Bem-vindo ao Firefox!</div>
+        </div>
+    </div>
+
+    <!-- RECUPERADOR -->
+
+    <div class="window" id="recuperador">
+        <div class="title">
+            Recuperador de Arquivos
+            <button class="close" onclick="closeApp('recuperador')">X</button>
+        </div>
+        <div class="content">
+            <h3>RECUPERADOR DE ARQUIVOS</h3>
+            <p>Um arquivo foi removido do sistema.</p>
+            <hr>
+            <p>Insira a senha do arquivo:</p>
+            <input id="recovery" placeholder="Senha do arquivo...">
+            <button class="btn" onclick="recover()">Recuperar</button>
+            <div class="status" id="recoverstatus">Aguardando senha...</div>
+        </div>
+    </div>
+
+    <!-- CONTROLE DE LUZES -->
+
+    <div class="window" id="luzes">
+        <div class="title">
+            Controle de Luzes
+            <button class="close" onclick="closeApp('luzes')">X</button>
+        </div>
+        <div class="content" id="lightcontent">
+            <h3>CONTROLE DE LUZES</h3>
+            <p>Este aplicativo está protegido.</p>
+            <hr>
+            <input id="lightpass" placeholder="Senha de acesso...">
+            <button class="btn" onclick="unlock()">Desbloquear</button>
+            <div class="status" id="lightstatus">ACESSO RESTRITO</div>
+        </div>
+    </div>
+
+    <!-- PASTA MISTERIOSA -->
+
+    <div class="window" id="pasta">
+        <div class="title">
+            *AWES@M12
+            <button class="close" onclick="closeApp('pasta')">X</button>
+        </div>
+        <div class="content">
+            <h3>*AWES@M12</h3>
+            <hr>
+            <p>▤ documento_??? .txt</p>
+            <div class="document">
+REGISTRO DE ACESSO
+
+O código foi alterado.
+
+Não use os números diretamente.
+
+Existe uma diferença entre
+o valor original e o valor atual.
+
+DICA:
+
+1 = 3
+2 = 4
+3 = 5
+4 = 6
+
+O procedimento deve ser invertido.
+
+CÓDIGO:
+
+3 - 10 - 11 - 6
+
+[ARQUIVO FINALIZADO]
+            </div>
+        </div>
+    </div>
+
+    <!-- FUNCIONÁRIOS -->
+
+    <div class="window" id="funcionarios">
+        <div class="title">
+            Funcionários.txt
+            <button class="close" onclick="closeApp('funcionarios')">X</button>
+        </div>
+        <div class="content">
+            <h3>REGISTRO DE FUNCIONÁRIOS</h3>
+            <p class="small">Documento administrativo</p>
+            <hr>
+            <div class="document">
+LISTA DE FUNCIONÁRIOS
+
+Funcionário 001
+Cargo: Manutenção geral
+Situação: Ativo
+
+Funcionário 002
+Cargo: Recepção
+Situação: Ativo
+
+Funcionário 003
+Cargo: Técnico de iluminação
+Situação: Ativo
+
+Funcionário 004
+Cargo: Limpeza
+Situação: Não informado
+
+Última atualização:
+14/08/2002
+
+OBSERVAÇÃO:
+Alguns registros antigos não foram
+transferidos para o sistema atual.
+            </div>
+        </div>
+    </div>
+
+    <!-- MANUAL TÉCNICO -->
+
+    <div class="window" id="manual">
+        <div class="title">
+            Manual Técnico
+            <button class="close" onclick="closeApp('manual')">X</button>
+        </div>
+        <div class="content">
+            <h3>MANUAL TÉCNICO</h3>
+            <div class="document">
+MANUAL DE FUNCIONAMENTO
+
+SISTEMA: HAPPYSIDE
+VERSÃO: 2.1
+
+1. SISTEMA DE ILUMINAÇÃO
+
+As luzes das cabanas são controladas
+por um painel central.
+
+2. ENERGIA
+
+O gerador deve ser verificado
+periodicamente.
+
+3. MANUTENÇÃO
+
+Qualquer falha deve ser registrada
+no relatório técnico.
+
+4. SEGURANÇA
+
+Não desligar o sistema principal
+durante uma manutenção programada.
+
+FIM DO MANUAL.
+            </div>
+        </div>
+    </div>
+
+    <!-- RELATÓRIO DE MANUTENÇÃO -->
+
+    <div class="window" id="manutencao">
+        <div class="title">
+            Relatório de Manutenção
+            <button class="close" onclick="closeApp('manutencao')">X</button>
+        </div>
+        <div class="content">
+            <h3>RELATÓRIO DE MANUTENÇÃO</h3>
+            <div class="document">
+RELATÓRIO TÉCNICO
+DATA: 12/08/2002
+
+SETOR: CABANAS
+
+- Cabana 001:
+  Pequena falha no sistema de iluminação.
+
+- Cabana 002:
+  Verificação de tomadas concluída.
+
+- Cabana 003:
+  Equipamento de ventilação revisado.
+
+OBSERVAÇÃO:
+
+A central de energia apresentou
+pequenas oscilações durante o teste.
+
+Nenhuma interrupção foi registrada.
+
+RESPONSÁVEL:
+Equipe de manutenção.
+            </div>
+        </div>
+    </div>
+
+    <!-- LISTA DE MATERIAIS -->
+
+    <div class="window" id="materiais">
+        <div class="title">
+            Lista de Materiais
+            <button class="close" onclick="closeApp('materiais')">X</button>
+        </div>
+        <div class="content">
+            <h3>LISTA DE MATERIAIS</h3>
+            <div class="document">
+ESTOQUE GERAL
+
+Iluminação:
+- 12 lâmpadas
+- 4 interruptores
+- 2 cabos elétricos
+
+Manutenção:
+- 3 caixas de ferramentas
+- 8 parafusos
+- 2 rolos de fita
+
+Limpeza:
+- 6 panos
+- 3 baldes
+- 2 vassouras
+
+Última contagem:
+09/08/2002
+            </div>
+        </div>
+    </div>
+
+    <!-- ANOTAÇÕES -->
+
+    <div class="window" id="anotacoes">
+        <div class="title">
+            Anotações.txt
+            <button class="close" onclick="closeApp('anotacoes')">X</button>
+        </div>
+        <div class="content">
+            <h3>ANOTAÇÕES</h3>
+            <div class="document">
+LEMBRETES
+
+- Conferir estoque.
+- Atualizar os registros.
+- Verificar o painel central.
+- Entregar as chaves da recepção.
+
+Não esquecer de devolver o rádio
+para o armário de equipamentos.
+
+Fim.
+            </div>
+        </div>
+    </div>
+
+    <!-- PASTA DAS CABANAS -->
+
+    <div class="window" id="cabanas">
+        <div class="title">
+            Arquivos das Cabanas
+            <button class="close" onclick="closeApp('cabanas')">X</button>
+        </div>
+        <div class="content">
+            <h3>ARQUIVOS DAS CABANAS</h3>
+            <hr>
+            <button class="btn" onclick="openApp('cabana1')">▤ Cabana 001</button>
+            <button class="btn" onclick="openApp('cabana2')">▤ Cabana 002</button>
+            <button class="btn" onclick="openApp('cabana3')">▤ Cabana 003</button>
+            <p class="small">Diretório de documentos técnicos.</p>
+        </div>
+    </div>
+
+    <!-- CABANA 001 -->
+
+    <div class="window" id="cabana1">
+        <div class="title">
+            Cabana 001
+            <button class="close" onclick="closeApp('cabana1')">X</button>
+        </div>
+        <div class="content">
+            <h3>CABANA 001</h3>
+            <div class="document">
+REGISTRO DA CABANA 001
+
+Capacidade: 4 pessoas
+Estado: Em funcionamento
+
+Sistema de iluminação:
+Apresenta algumas falhas no
+funcionamento técnico.
+
+Última verificação:
+10/08/2002
+
+Responsável:
+Equipe de manutenção.
+            </div>
+        </div>
+    </div>
+
+    <!-- CABANA 002 -->
+
+    <div class="window" id="cabana2">
+        <div class="title">
+            Cabana 002
+            <button class="close" onclick="closeApp('cabana2')">X</button>
+        </div>
+        <div class="content">
+            <h3>CABANA 002</h3>
+            <div class="document">
+REGISTRO DA CABANA 002
+
+Capacidade: 3 pessoas
+Estado: Em funcionamento
+
+Dados interessantes:
+
+A cabana possui uma pequena
+área de armazenamento.
+
+Equipamentos registrados:
+- 2 lanternas
+- 1 rádio
+- 1 ventilador
+
+Última verificação:
+11/08/2002
+            </div>
+        </div>
+    </div>
+
+    <!-- CABANA 003 -->
+
+    <div class="window" id="cabana3">
+        <div class="title">
+            Cabana 003
+            <button class="close" onclick="closeApp('cabana3')">X</button>
+        </div>
+        <div class="content">
+            <h3>CABANA 003</h3>
+            <div class="document">
+REGISTRO DA CABANA 003
+
+Capacidade: 5 pessoas
+Estado: Em funcionamento
+
+Observações:
+
+A estrutura passou por uma
+reforma recente.
+
+A equipe recomenda verificar
+as janelas antes da utilização.
+
+Última verificação:
+13/08/2002
+            </div>
+        </div>
+    </div>
+
+    <!-- JOGO DA MEMÓRIA -->
+
+    <div class="window" id="jogo">
+        <div class="title">
+            Jogo da Memória
+            <button class="close" onclick="closeApp('jogo')">X</button>
+        </div>
+        <div class="content">
+            <h3>JOGO DA MEMÓRIA</h3>
+            <p>Encontre todos os pares!</p>
+            <p id="gameScore">Pares encontrados: 0 / 4</p>
+            <div class="game-board" id="gameBoard"></div>
+            <button class="btn" onclick="newGame()">Reiniciar jogo</button>
+        </div>
+    </div>
+
+    <!-- MENU INICIAR -->
+
+    <div id="startmenu">
+        <h3>HAPPYSIDE OS</h3>
+        <button onclick="openApp('arquivo')">▤ Arquivo Happyside</button>
+        <button onclick="openApp('firefox')">◉ Firefox</button>
+        <button onclick="openApp('luzes')">▧ Controle de Luzes</button>
+        <button onclick="openApp('recuperador')">▣ Recuperador</button>
+        <button onclick="openApp('cabanas')">▰ Arquivos das Cabanas</button>
+        <button onclick="openApp('jogo')">▦ Jogo da Memória</button>
+        <hr>
+        <button onclick="shutdown()">⏻ Desligar</button>
+    </div>
+
+</div>
+
+<!-- BARRA DE TAREFAS -->
+
+<div id="taskbar">
+    <button id="start" onclick="toggleStart()">▣ Iniciar</button>
+    <div id="taskButtons"></div>
+    <div id="clock">00:00</div>
+</div>
+
+<script>
+
+/* CONTROLE DE JANELAS */
+
+let fileAvailable = true;
+let fileRecovered = false;
+let timerInterval = null;
+let z = 20;
+
+const appNames = {
+    arquivo: "Arquivo Happyside",
+    firefox: "Firefox",
+    luzes: "Controle de Luzes",
+    pasta: "*AWES@M12",
+    recuperador: "Recuperador",
+    funcionarios: "Funcionários",
+    manual: "Manual Técnico",
+    manutencao: "Manutenção",
+    materiais: "Materiais",
+    anotacoes: "Anotações",
+    cabanas: "Arquivos das Cabanas",
+    cabana1: "Cabana 001",
+    cabana2: "Cabana 002",
+    cabana3: "Cabana 003",
+    jogo: "Jogo da Memória"
+};
+
+function openApp(id) {
+    if (id === "arquivo" && !fileAvailable) {
+        notify("ERRO: Arquivo não encontrado.");
+        return;
+    }
+
+    const win = document.getElementById(id);
+    win.style.display = "block";
+    win.style.zIndex = ++z;
+
+    addTaskButton(id);
+
+    if (id === "arquivo") startTimer();
+    if (id === "jogo" && !gameStarted) newGame();
+}
+
+function closeApp(id) {
+    document.getElementById(id).style.display = "none";
+    removeTaskButton(id);
+
+    if (id === "arquivo") clearInterval(timerInterval);
+}
+
+function addTaskButton(id) {
+    if (document.getElementById("task-" + id)) return;
+
+    const btn = document.createElement("button");
+    btn.className = "task-button";
+    btn.id = "task-" + id;
+    btn.textContent = appNames[id];
+
+    btn.onclick = () => {
+        const win = document.getElementById(id);
+        if (win.style.display === "block") {
+            win.style.display = "none";
+        } else {
+            win.style.display = "block";
+            win.style.zIndex = ++z;
+        }
+    };
+
+    document.getElementById("taskButtons").appendChild(btn);
+}
+
+function removeTaskButton(id) {
+    const btn = document.getElementById("task-" + id);
+    if (btn) btn.remove();
+}
+
+/* MENU INICIAR */
+
+function toggleStart() {
+    const menu = document.getElementById("startmenu");
+    menu.style.display =
+        menu.style.display === "block" ? "none" : "block";
+}
+
+/* RELÓGIO */
+
+function updateClock() {
+    document.getElementById("clock").textContent =
+        new Date().toLocaleTimeString("pt-BR", {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+/* FIREFOX */
+
+function searchWeb() {
+    const query = document.getElementById("search").value;
+
+    document.getElementById("webstatus").innerHTML =
+        query.trim()
+        ? "<span class='corrupt'>ERRO: Sem conexão com a internet.</span><br><br>Não foi possível acessar a página solicitada."
+        : "Digite algo para pesquisar.";
+}
+
+/* TEMPORIZADOR DO ARQUIVO */
+
+function startTimer() {
+    clearInterval(timerInterval);
+
+    let seconds = fileRecovered ? 120 : 30;
+    const timer = document.getElementById("timer");
+
+    timer.textContent = fileRecovered
+        ? "ARQUIVO RECUPERADO - 02:00"
+        : "ARQUIVO TEMPORÁRIO - 00:30";
+
+    timerInterval = setInterval(() => {
+        seconds--;
+
+        const min = String(Math.floor(seconds / 60)).padStart(2, "0");
+        const sec = String(seconds % 60).padStart(2, "0");
+
+        timer.textContent =
+            (fileRecovered ? "ARQUIVO RECUPERADO - " : "ARQUIVO TEMPORÁRIO - ")
+            + min + ":" + sec;
+
+        if (seconds === 10) {
+            document.getElementById("arquivo").classList.add("glitch");
+            notify("AVISO: Instabilidade detectada no arquivo.");
+        }
+
+        if (seconds <= 0) {
+            clearInterval(timerInterval);
+            closeApp("arquivo");
+
+            fileAvailable = false;
+            fileRecovered = false;
+
+            document.getElementById("arquivo").classList.remove("glitch");
+            notify("ERRO: Arquivo removido do sistema.");
+        }
+    }, 1000);
+}
+
+/* RECUPERADOR */
+
+function recover() {
+    const password =
+        document.getElementById("recovery").value.trim().toUpperCase();
+
+    if (password === "CODIGO2") {
+        fileAvailable = true;
+        fileRecovered = true;
+
+        document.getElementById("recoverstatus").textContent =
+            "ARQUIVO RECUPERADO COM SUCESSO!";
+
+        notify("Arquivo Happyside recuperado.");
+
+        setTimeout(() => openApp("arquivo"), 700);
+    } else {
+        document.getElementById("recoverstatus").innerHTML =
+            "<span class='corrupt'>SENHA INCORRETA.</span>";
+    }
+}
+
+/* CONTROLE DE LUZES */
+
+function unlock() {
+    const password = document.getElementById("lightpass").value.trim();
+
+    if (password === "1849") {
+        document.getElementById("lightcontent").innerHTML = `
+            <h3>CONTROLE DE LUZES</h3>
+            <p>SISTEMA DE CONTROLE PRINCIPAL</p>
+            <hr>
+            <button class="btn" onclick="lightAction('Ligar luzes')">Ligar luzes</button>
+            <button class="btn" onclick="lightAction('Ativar gerador')">Ativar gerador</button>
+            <button class="btn" onclick="lightAction('Desativar gerador')">Desativar gerador</button>
+            <button class="btn corrupt" onclick="lightAction('???')">*#%&@!_ERROR</button>
+            <div class="status" id="lightstatus">SISTEMA PRONTO.</div>
+        `;
+
+        notify("Acesso autorizado.");
+    } else {
+        document.getElementById("lightstatus").innerHTML =
+            "<span class='corrupt'>SENHA INCORRETA.</span>";
+    }
+}
+
+function lightAction(action) {
+    const status = document.getElementById("lightstatus");
+
+    if (action === "???") {
+        status.innerHTML =
+            "<span class='corrupt'>ERRO 0x000: COMANDO DESCONHECIDO</span>";
+
+        document.getElementById("desktop").classList.add("glitch");
+
+        setTimeout(() => {
+            document.getElementById("desktop").classList.remove("glitch");
+        }, 1500);
+
+    } else {
+        status.textContent = "COMANDO EXECUTADO: " + action.toUpperCase();
+    }
+}
+
+/* NOTIFICAÇÕES */
+
+function notify(message) {
+    const box = document.getElementById("notification");
+    box.textContent = message;
+    box.style.display = "block";
+
+    setTimeout(() => {
+        box.style.display = "none";
+    }, 3500);
+}
+
+/* DESLIGAR */
+
+function shutdown() {
+    document.body.innerHTML = `
+        <div style="
+            background:black;
+            color:white;
+            height:100vh;
+            display:grid;
+            place-content:center;
+            text-align:center;
+        ">
+            <h1>HAPPYSIDE OS</h1>
+            <p>O computador foi desligado.</p>
+            <p>Você pode fechar esta página.</p>
+        </div>
+    `;
+}
+
+/* ARRASTAR JANELAS SEM SAIR DA TELA */
+
+document.querySelectorAll(".window").forEach(win => {
+    const bar = win.querySelector(".title");
+    let moving = false;
+    let dx = 0;
+    let dy = 0;
+
+    bar.addEventListener("pointerdown", e => {
+        if (e.target.classList.contains("close")) return;
+
+        moving = true;
+        win.style.transform = "none";
+        win.style.zIndex = ++z;
+
+        const rect = win.getBoundingClientRect();
+        dx = e.clientX - rect.left;
+        dy = e.clientY - rect.top;
+
+        bar.setPointerCapture(e.pointerId);
+    });
+
+    bar.addEventListener("pointermove", e => {
+        if (!moving) return;
+
+        const maxLeft = window.innerWidth - win.offsetWidth;
+        const maxTop = window.innerHeight - win.offsetHeight - 43;
+
+        const left = Math.max(0, Math.min(e.clientX - dx, maxLeft));
+        const top = Math.max(0, Math.min(e.clientY - dy, maxTop));
+
+        win.style.left = left + "px";
+        win.style.top = top + "px";
+    });
+
+    bar.addEventListener("pointerup", () => {
+        moving = false;
+    });
+
+    bar.addEventListener("pointercancel", () => {
+        moving = false;
+    });
+});
+
+/* JOGO DA MEMÓRIA */
+
+let gameStarted = false;
+let firstCard = null;
+let locked = false;
+let pairs = 0;
+let matched = [];
+
+function newGame() {
+    gameStarted = true;
+    firstCard = null;
+    locked = false;
+    pairs = 0;
+    matched = [];
+
+    const symbols = ["★", "◆", "●", "▲"];
+    const cards = [...symbols, ...symbols]
+        .sort(() => Math.random() - 0.5);
+
+    const board = document.getElementById("gameBoard");
+    board.innerHTML = "";
+
+    document.getElementById("gameScore").textContent =
+        "Pares encontrados: 0 / 4";
+
+    cards.forEach((symbol, index) => {
+        const card = document.createElement("button");
+        card.className = "game-card";
+        card.textContent = "?";
+
+        card.onclick = () => flipCard(card, symbol, index);
+
+        board.appendChild(card);
+    });
+}
+
+function flipCard(card, symbol, index) {
+    if (locked || matched.includes(index) || card.classList.contains("flipped")) {
+        return;
+    }
+
+    card.classList.add("flipped");
+    card.textContent = symbol;
+
+    if (!firstCard) {
+        firstCard = { card, symbol, index };
+        return;
+    }
+
+    if (firstCard.symbol === symbol) {
+        matched.push(firstCard.index, index);
+        pairs++;
+
+        document.getElementById("gameScore").textContent =
+            "Pares encontrados: " + pairs + " / 4";
+
+        firstCard = null;
+
+        if (pairs === 4) {
+            setTimeout(() => notify("Parabéns! Você encontrou todos os pares."), 300);
+        }
+    } else {
+        locked = true;
+
+        const previous = firstCard;
+        firstCard = null;
+
+        setTimeout(() => {
+            previous.card.classList.remove("flipped");
+            previous.card.textContent = "?";
+            card.classList.remove("flipped");
+            card.textContent = "?";
+            locked = false;
+        }, 750);
+    }
+}
+
+</script>
+</body>
+</html>
